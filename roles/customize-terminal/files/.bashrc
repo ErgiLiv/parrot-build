@@ -94,13 +94,13 @@ xterm*|rxvt*|tmux*)
     IS_VPN_CONNECTED=$(nmcli c show | grep vpn | grep -E \(eu\|au\|us\|sg\) | awk '{print $4}')
     
     VPN_DEV=$(ip addr | grep tun | grep inet | grep -E "(10\.10|10\.129)" | tr -s ' ' | awk '{print $8}')
-    WIFI_DEV=$([ -n "$WIFI" ] && echo $WIFI | awk '{print $4}')
-    ETHER_DEV=$([ -n "$ETHER" ] && echo $ETHER | awk '{print $4}')
+    WIFI_DEV=$([ -n "$WIFI" ] && echo "$WIFI" | awk '{print $NF}')
+    ETHER_DEV=$([ -n "$ETHER" ] && echo "$ETHER" | awk '{print $NF}')
     
     if [ ! -z "$WIFI" ]; then
-      IP=$(ip -4 -o addr show $WIFI_DEV|awk '{print $4}'|sed 's/\/.*$//g')
+      IP=$(ip -4 -o addr show "$WIFI_DEV" 2>/dev/null | awk '{print $4}' | sed 's/\/.*$//g')
     else
-      IP=$(ip -4 -o addr show $ETHER_DEV|awk '{print $4}'|sed 's/\/.*$//g')
+      IP=$(ip -4 -o addr show "$ETHER_DEV" 2>/dev/null | awk '{print $4}' | sed 's/\/.*$//g')
     fi
     
     if [ ! -z "$VPN" ]; then
